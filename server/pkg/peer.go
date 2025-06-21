@@ -6,10 +6,8 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-type PeerID int
-
 type Peer struct {
-	id       PeerID
+	id       PeerId
 	ws       *websocket.Conn
 	send     chan []byte
 	closed   chan struct{}
@@ -28,7 +26,7 @@ func (peer *Peer) close() {
 
 func NewPeer(ws *websocket.Conn) *Peer {
 	return &Peer{
-		id:     PeerID(NewID()),
+		id:     PeerId(NewID()),
 		ws:     ws,
 		closed: make(chan struct{}),
 		// Buffered channel

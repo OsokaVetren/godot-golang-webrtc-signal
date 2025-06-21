@@ -13,9 +13,9 @@ const (
 )
 
 type Hub struct {
-	peers      map[PeerID]*Peer
-	lobbies    map[LobbyID]*Lobby
-	peer_lobby map[PeerID]LobbyID
+	peers      map[PeerId]*Peer
+	lobbies    map[LobbyId]*Lobby
+	peer_lobby map[PeerId]LobbyId
 
 	// Channels for messages
 	connect    chan *Peer
@@ -25,9 +25,9 @@ type Hub struct {
 
 func NewHub() *Hub {
 	return &Hub{
-		peers:      make(map[PeerID]*Peer),
-		lobbies:    make(map[LobbyID]*Lobby),
-		peer_lobby: make(map[PeerID]LobbyID),
+		peers:      make(map[PeerId]*Peer),
+		lobbies:    make(map[LobbyId]*Lobby),
+		peer_lobby: make(map[PeerId]LobbyId),
 
 		connect:    make(chan *Peer),
 		disconnect: make(chan *Peer),
@@ -90,11 +90,11 @@ func (hub *Hub) Run() {
     				hub.peer_lobby[source_peer.id] = lobby.id
 
     				// 2. Отвечаем хосту его ЛОКАЛЬНЫМ ID (=1)
-    				source_peer.send <- msg(int(lobby.LocalID(source_peer)), CONNECTED, nil)
+    				source_peer.send <- msg(int(lobby.LocalId(source_peer)), CONNECTED, nil)
     				source_peer.send <- msg(int(lobby.id), HOST, nil)
 
 			case JOIN:
-				lobby := hub.lobbies[LobbyID(peer_msg.msg.id)]
+				lobby := hub.lobbies[LobbyId(peer_msg.msg.id)]
     				// подтвердить подключение новому игроку
     				localID := lobby.AddMember(source_peer)
     				hub.peer_lobby[source_peer.id] = lobby.id
@@ -116,7 +116,7 @@ func (hub *Hub) Run() {
 			// TODO: Handle leave
 
 			case SEAL:
-			    lobby := hub.lobbies[LobbyID(peer_msg.msg.id)]
+			    lobby := hub.lobbies[LobbyId(peer_msg.msg.id)]
 			    if lobby == nil {
 			        fmt.Println("[Hub.Run] Lobby not found")
 			        continue
@@ -133,7 +133,7 @@ func (hub *Hub) Run() {
 			
 			    // рассылаем от имени локального ID хоста (=1)
 			    for _, member := range lobby.members {
-			        senderLocal := lobby.LocalID(source_peer)
+			        senderLocal := lobby.LocalId(source_peer)
 			        member.send <- msg(int(senderLocal), SEAL, nil)
 			    }
 
@@ -146,7 +146,7 @@ func (hub *Hub) Run() {
     				}
 
 				// msg.id = локальный ID адресата
-				targetLocal := LocalID(peer_msg.msg.id)
+				targetLocal := LocalId(peer_msg.msg.id)
 				targetPeer := lobby.PeerByLocal(targetLocal)
 				if targetPeer == nil {
 				fmt.Println("[Hub] Target peer not in lobby")
@@ -154,7 +154,7 @@ func (hub *Hub) Run() {
 				}
 				
 				// пересылаем, указав для получателя ЛОКАЛЬНЫЙ ID отправителя
-				sourceLocal := lobby.LocalID(source_peer)
+				sourceLocal := lobby.LocalId(source_peer)
 				targetPeer.send <- msg(int(sourceLocal), peer_msg.msg.msgType, peer_msg.msg.data)
 			}
 		}

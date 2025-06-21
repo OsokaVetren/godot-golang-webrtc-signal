@@ -2,8 +2,6 @@ package pkg
 
 import "time"
 
-type LoсalId int
-
 type Lobby struct {
 	id       LobbyID
 	hostGlobal     PeerID
@@ -17,7 +15,7 @@ func NewLobby(host *Peer) *Lobby {
 	L := &Lobby{
 		id:      LobbyID(NewID()),
 		hostGlobal:    host.id,
-		members:      make(map[LocalID]*Peer),
+		members:      make(map[ID]*Peer),
     		global2local: make(map[PeerID]LocalID),
     		local2global: make(map[LocalID]PeerID),
 	}

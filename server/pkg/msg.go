@@ -28,7 +28,7 @@ type Msg struct {
 }
 
 type PeerMsg struct {
-	sourceId PeerID
+	sourceId PeerId
 	msg      *Msg
 }
 
@@ -70,7 +70,7 @@ func msg(id int, msgType MessageType, data []byte) []byte {
 }
 
 // Create a new Msg with the given sourceId and payload.
-func NewPeerMsg(sourceId PeerID, msgSerialized []byte) *PeerMsg {
+func NewPeerMsg(sourceId PeerId, msgSerialized []byte) *PeerMsg {
 	return &PeerMsg{
 		sourceId: sourceId,
 		msg:      deserializeMsg(msgSerialized),

@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"time"
 )
-type LobbyID int
-type PeerID int
-type LocalID int
+type LobbyId int
+type PeerId int
+type LocalId int
 
 const (
 	LOBBY_SEAL_GRACE_PERIOD = 10 * time.Second

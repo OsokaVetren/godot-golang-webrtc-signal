@@ -6,7 +6,7 @@ type LoсalId int
 
 type Lobby struct {
 	id       LobbyID
-	host     PeerID
+	hostGlobal     PeerID
 	members  map[LocalID]*Peer
 	global2local map[PeerId]LocalId
 	local2global map[LocalId]PeerId
@@ -19,7 +19,7 @@ func NewLobby(host *Peer) *Lobby {
 		hostGlobal:    host.id,
 		members:      make(map[LocalID]*Peer),
     		global2local: make(map[PeerID]LocalID),
-    		local2global: make(map[LocalID]PeerID)
+    		local2global: make(map[LocalID]PeerID),
 	}
 	L.members[1] = host;
 	L.global2local[host.id] = 1

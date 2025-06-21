@@ -7,9 +7,9 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-type LobbyID int
-type PeerID int
-type LocalID int
+type LobbyId int
+type PeerId int
+type LocalId int
 
 const (
 	READ_TIMEOUT  = 60 * time.Second

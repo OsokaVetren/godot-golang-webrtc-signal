@@ -3,8 +3,8 @@ package pkg
 import "time"
 
 type Lobby struct {
-	id       LobbyID
-	hostGlobal     PeerID
+	id       LobbyId
+	hostGlobal     PeerId
 	members  map[LocalID]*Peer
 	global2local map[PeerId]LocalId
 	local2global map[LocalId]PeerId
@@ -13,11 +13,11 @@ type Lobby struct {
 
 func NewLobby(host *Peer) *Lobby {
 	L := &Lobby{
-		id:      LobbyID(NewID()),
+		id:      LobbyId(NewID()),
 		hostGlobal:    host.id,
 		members:      make(map[ID]*Peer),
-    		global2local: make(map[PeerID]LocalID),
-    		local2global: make(map[LocalID]PeerID),
+    		global2local: make(map[PeerId]LocalID),
+    		local2global: make(map[LocalID]PeerId),
 	}
 	L.members[1] = host;
 	L.global2local[host.id] = 1

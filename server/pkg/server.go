@@ -7,6 +7,10 @@ import (
 	"github.com/gorilla/websocket"
 )
 
+type LobbyID int
+type PeerID int
+type LocalID int
+
 const (
 	READ_TIMEOUT  = 60 * time.Second
 	WRITE_TIMEOUT = 10 * time.Second

@@ -82,37 +82,32 @@ func (hub *Hub) Run() {
 
 			switch peer_msg.msg.msgType {
 			case HOST:
-				source_peer.send <- msg(int(source_peer.id), CONNECTED, nil)
-
 				lobby := NewLobby(source_peer)
-				hub.lobbies[lobby.id] = lobby
+    				hub.lobbies[lobby.id] = lobby
+    				hub.peer_lobby[source_peer.id] = lobby.id
 
-				source_peer.send <- msg(int(lobby.id), HOST, nil)
-
-				lobby.members[source_peer.id] = source_peer
-				hub.peer_lobby[source_peer.id] = lobby.id
+    				// 2. Отвечаем хосту его ЛОКАЛЬНЫМ ID (=1)
+    				source_peer.send <- msg(int(lobby.LocalID(source_peer)), CONNECTED, nil)
+    				source_peer.send <- msg(int(lobby.id), HOST, nil)
 
 			case JOIN:
-				source_peer.send <- msg(int(source_peer.id), CONNECTED, nil)
-
 				lobby := hub.lobbies[LobbyID(peer_msg.msg.id)]
+    				// подтвердить подключение новому игроку
+    				localID := lobby.AddMember(source_peer)
+    				hub.peer_lobby[source_peer.id] = lobby.id
 
-				// We pass whether the lobby has already been sealed or not. This
-				// can happen during the grace period after host has sealed the
-				// lobby, but peers can still join for a short window. We need
-				// to inform the peer so the client knows whether to advance
-				// them to the game or keep them in the lobby.
-				isSealed := fmt.Sprintf("%t", !lobby.sealedAt.IsZero())
+    				isSealed := fmt.Sprintf("%t", !lobby.sealedAt.IsZero())
+    				source_peer.send <- msg(int(localID), CONNECTED, nil)
+    				source_peer.send <- msg(int(lobby.id), JOIN, []byte(isSealed))
 
-				source_peer.send <- msg(int(lobby.id), JOIN, []byte(isSealed))
-
-				for _, member := range lobby.members {
-					source_peer.send <- msg(int(member.id), PEER_CONNECT, nil)
-					member.send <- msg(int(source_peer.id), PEER_CONNECT, nil)
-				}
-
-				lobby.members[source_peer.id] = source_peer
-				hub.peer_lobby[source_peer.id] = lobby.id
+    				// уведомляем всех остальных
+    				for id, member := range lobby.members {
+        				if id == localID {
+            					continue
+        				}
+        				source_peer.send <- msg(int(id), PEER_CONNECT, nil)
+        				member.send <- msg(int(localID), PEER_CONNECT, nil)
+    				}
 
 			// case LEAVE:
 			// TODO: Handle leave
@@ -142,16 +137,24 @@ func (hub *Hub) Run() {
 				}
 
 			case OFFER, ANSWER, CANDIDATE:
-				target_id := peer_msg.msg.id
+				lobbyID := hub.peer_lobby[source_peer.id]
+    				lobby := hub.lobbies[lobbyID]
+    				if lobby == nil {
+        				fmt.Println("[Hub] Lobby not found")
+        				continue
+    				}
 
-				peer := hub.peers[PeerID(target_id)]
-
-				if peer == nil || hub.peer_lobby[peer.id] != hub.peer_lobby[source_peer.id] {
-					fmt.Println("[Hub.Run] Peer not found or not in same lobby")
-					continue
+				// msg.id = локальный ID адресата
+				targetLocal := LocalID(peer_msg.msg.id)
+				targetPeer := lobby.PeerByLocal(targetLocal)
+				if targetPeer == nil {
+				fmt.Println("[Hub] Target peer not in lobby")
+				    continue
 				}
-
-				peer.send <- msg(int(source_peer.id), peer_msg.msg.msgType, peer_msg.msg.data)
+				
+				// пересылаем, указав для получателя ЛОКАЛЬНЫЙ ID отправителя
+				sourceLocal := lobby.LocalID(source_peer)
+				targetPeer.send <- msg(int(sourceLocal), peer_msg.msg.msgType, peer_msg.msg.data)
 			}
 		}
 	}

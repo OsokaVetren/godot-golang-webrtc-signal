@@ -15,7 +15,7 @@ func NewLobby(host *Peer) *Lobby {
 	L := &Lobby{
 		id:      LobbyId(NewID()),
 		hostGlobal:    host.id,
-		members:      make(map[ID]*Peer),
+		members:      make(map[LocalId]*Peer),
     		global2local: make(map[PeerId]LocalId),
     		local2global: make(map[LocalId]PeerId),
 	}

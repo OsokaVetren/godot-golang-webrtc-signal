@@ -12,10 +12,9 @@ type Lobby struct {
 }
 
 func NewLobby(host *Peer) *Lobby {
-	host.id = 1;
 	return &Lobby{
 		id:      LobbyID(NewID()),
-		host:    1,
+		host:    host.id,
 		members: make(map[PeerID]*Peer),
 	}
 }

@@ -5,7 +5,7 @@ import "time"
 type Lobby struct {
 	id       LobbyId
 	hostGlobal     PeerId
-	members  map[Local Id]*Peer
+	members  map[LocalId]*Peer
 	global2local map[PeerId]LocalId
 	local2global map[LocalId]PeerId
 	sealedAt time.Time
@@ -17,7 +17,7 @@ func NewLobby(host *Peer) *Lobby {
 		hostGlobal:    host.id,
 		members:      make(map[ID]*Peer),
     		global2local: make(map[PeerId]Local Id),
-    		local2global: make(map[Local Id]PeerId),
+    		local2global: make(map[LocalId]PeerId),
 	}
 	L.members[1] = host;
 	L.global2local[host.id] = 1
@@ -25,8 +25,8 @@ func NewLobby(host *Peer) *Lobby {
 	return L;
 }
 
-func (L *Lobby) AddMember(p *Peer) Local Id {
-  var next Local Id = 2
+func (L *Lobby) AddMember(p *Peer) LocalId {
+  var next LocalId = 2
   for {
     if _, ok := L.members[next]; !ok {
       break
@@ -39,7 +39,7 @@ func (L *Lobby) AddMember(p *Peer) Local Id {
   return next
 }
 
-func (L *Lobby) Local Id(p *Peer) Local Id {
+func (L *Lobby) LocalId(p *Peer) LocalId {
 	return L.global2local[p.id] 
 }
 

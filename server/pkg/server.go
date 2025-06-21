@@ -24,7 +24,7 @@ type Server struct {
 }
 
 type Diagnostics struct {
-	Lobbies []LobbyID
+	Lobbies []LobbyId
 	Peers   []PeerID
 }
 
@@ -44,7 +44,7 @@ func (server *Server) InitPeer(ws *websocket.Conn) {
 
 // Get a summary of the current state of the server.
 func (server *Server) GetDiagnostics() *Diagnostics {
-	lobbies := make([]LobbyID, 0, len(server.hub.lobbies))
+	lobbies := make([]LobbyId, 0, len(server.hub.lobbies))
 	peers := make([]PeerID, 0, len(server.hub.peers))
 
 	for id := range server.hub.lobbies {

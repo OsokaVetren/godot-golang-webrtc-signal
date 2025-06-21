@@ -113,28 +113,26 @@ func (hub *Hub) Run() {
 			// TODO: Handle leave
 
 			case SEAL:
-				lobby := hub.lobbies[LobbyID(peer_msg.msg.id)]
-
-				if lobby == nil {
-					fmt.Println("[Hub.Run] Lobby not found")
-					continue
-				}
-
-				if lobby.host != source_peer.id {
-					fmt.Println("[Hub.Run] Only host can seal lobby")
-					continue
-				}
-
-				if !lobby.sealedAt.IsZero() {
-					fmt.Println("[Hub.Run] Lobby already sealed")
-					continue
-				}
-
-				lobby.sealedAt = time.Now()
-
-				for _, member := range lobby.members {
-					member.send <- msg(int(lobby.id), SEAL, nil)
-				}
+			    lobby := hub.lobbies[LobbyID(peer_msg.msg.id)]
+			    if lobby == nil {
+			        fmt.Println("[Hub.Run] Lobby not found")
+			        continue
+			    }
+			    if lobby.hostGlobal != source_peer.id { // ← исправили
+			        fmt.Println("[Hub.Run] Only host can seal lobby")
+			        continue
+			    }
+			    if !lobby.sealedAt.IsZero() {
+			        fmt.Println("[Hub.Run] Lobby already sealed")
+			        continue
+			    }
+			    lobby.sealedAt = time.Now()
+			
+			    // рассылаем от имени локального ID хоста (=1)
+			    for _, member := range lobby.members {
+			        senderLocal := lobby.LocalID(source_peer)
+			        member.send <- msg(int(senderLocal), SEAL, nil)
+			    }
 
 			case OFFER, ANSWER, CANDIDATE:
 				lobbyID := hub.peer_lobby[source_peer.id]

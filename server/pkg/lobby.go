@@ -12,7 +12,7 @@ type Lobby struct {
 }
 
 func NewLobby(host *Peer) *Lobby {
-	host.ID = 1;
+	host.id = 1;
 	return &Lobby{
 		id:      LobbyID(NewID()),
 		host:    1,

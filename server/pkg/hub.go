@@ -94,7 +94,10 @@ func (hub *Hub) Run() {
     				source_peer.send <- msg(int(lobby.id), HOST, nil)
 
 			case JOIN:
-				lobby := hub.lobbies[LobbyId(peer_msg.msg.id)]
+				lobby, ok := hub.lobbies[LobbyId(peer_msg.msg.id)]
+				if !ok{
+					return
+				}
     				localID := lobby.AddMember(source_peer)
     				hub.peer_lobby[source_peer.id] = lobby.id
 

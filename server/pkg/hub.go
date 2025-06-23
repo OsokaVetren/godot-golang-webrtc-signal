@@ -94,11 +94,11 @@ func (hub *Hub) Run() {
     				source_peer.send <- msg(int(lobby.id), HOST, nil)
 
 			case JOIN:
-				lobbyID := LobbyId(peer_msg.msg.id)
-				lobby, ok := hub.lobbies[lobbyID]
+				lobbyId := LobbyId(peer_msg.msg.id)
+				lobby, ok := hub.lobbies[lobbyId]
 				if !ok {
 				// Лобби не найдено — можно отправить сообщение об ошибке или просто выйти
-				    fmt.Println("Lobby not found:", lobbyID)
+				    fmt.Println("Lobby not found:", lobbyId)
 				    return
 				}
     				localID := lobby.AddMember(source_peer)

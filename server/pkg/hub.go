@@ -160,7 +160,7 @@ func (hub *Hub) Run() {
 				targetPeer.send <- msg(int(sourceLocal), peer_msg.msg.msgType, peer_msg.msg.data)
 			case LOBBIES:
 				for _, lobby := range hub.lobbies {
-				    source_peer.send <- msg(int(lobby.id), LOBBIES, nil)
+				    source_peer.send <- msg(int(lobby.id), LOBBIES, lobby.members[1].name);
 				}
 			case UPDATENAME:
 				source_peer.UpdateName(peer_msg.msg.data);

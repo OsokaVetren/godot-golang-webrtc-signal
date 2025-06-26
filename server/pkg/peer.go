@@ -36,9 +36,9 @@ func NewPeer(ws *websocket.Conn) *Peer {
 	}
 }
 
-func UpdateName(name String) *Peer {
-	if(name == ""){
-		return;
+func (peer *Peer) UpdateName(name string) {
+	if name == "" {
+		return
 	}
-	Peer.name = name;
+	peer.name = name
 }

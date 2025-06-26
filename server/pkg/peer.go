@@ -25,13 +25,20 @@ func (peer *Peer) close() {
 	peer.ws.Close()
 }
 
-func NewPeer(ws *websocket.Conn, name string) *Peer {
+func NewPeer(ws *websocket.Conn) *Peer {
 	return &Peer{
 		id:     PeerId(NewID()),
-		name: name,
+		name: "Anonymous",
 		ws:     ws,
 		closed: make(chan struct{}),
 		// Buffered channel
 		send: make(chan []byte, 256),
 	}
+}
+
+func UpdateName(name String) *Peer {
+	if(name == ""){
+		return;
+	}
+	Peer.name = name;
 }

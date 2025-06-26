@@ -19,6 +19,7 @@ const (
 	ANSWER
 	CANDIDATE
 	SEAL
+	LOBBIES
 )
 
 type Msg struct {

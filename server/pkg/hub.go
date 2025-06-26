@@ -162,6 +162,8 @@ func (hub *Hub) Run() {
 				for _, lobby := range hub.lobbies {
 				    source_peer.send <- msg(int(lobby.id), LOBBIES, nil)
 				}
+			case UPDATENAME:
+				source_peer.UpdateName(peer_msg.msg.data);
 			}
 		}
 	}

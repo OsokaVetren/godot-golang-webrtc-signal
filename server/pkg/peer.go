@@ -8,6 +8,7 @@ import (
 
 type Peer struct {
 	id       PeerId
+	name	 string
 	ws       *websocket.Conn
 	send     chan []byte
 	closed   chan struct{}
@@ -24,9 +25,10 @@ func (peer *Peer) close() {
 	peer.ws.Close()
 }
 
-func NewPeer(ws *websocket.Conn) *Peer {
+func NewPeer(ws *websocket.Conn, name string) *Peer {
 	return &Peer{
 		id:     PeerId(NewID()),
+		name: name,
 		ws:     ws,
 		closed: make(chan struct{}),
 		// Buffered channel

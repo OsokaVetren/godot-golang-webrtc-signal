@@ -20,6 +20,7 @@ const (
 	CANDIDATE
 	SEAL
 	LOBBIES
+	UPDATENAME
 )
 
 type Msg struct {

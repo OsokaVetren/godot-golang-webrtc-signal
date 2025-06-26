@@ -35,8 +35,8 @@ func (server *Server) Run() {
 }
 
 // Initialize a Peer for a WebSocket connection.
-func (server *Server) InitPeer(ws *websocket.Conn) {
-	peer := NewPeer(ws)
+func (server *Server) InitPeer(ws *websocket.Conn, name string) {
+	peer := NewPeer(ws, name)
 
 	go peerToHub(peer, server.hub)
 	go peerToWs(peer)

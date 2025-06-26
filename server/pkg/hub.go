@@ -163,7 +163,8 @@ func (hub *Hub) Run() {
 				    source_peer.send <- msg(int(lobby.id), LOBBIES, []byte(lobby.members[1].name));
 				}
 			case UPDATENAME:
-				source_peer.UpdateName(peer_msg.msg.data);
+				source_peer.UpdateName(string(peer_msg.msg.data))
+
 			}
 		}
 	}
